@@ -1,5 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
 
 df = pd.read_csv('Data/support_tickets_sample.csv')
 
@@ -16,4 +20,27 @@ print(df["category"].head)
 
 plt.bar(category_counts.index, category_counts.values)
 plt.xticks(rotation=45)
-plt.show()
+
+
+x = df[["subject", "description"]]
+y = df["category"]
+
+
+
+x_train, x_test, y_train, y_test = train_test_split(
+    x,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+print(y_train.value_counts())
+
+most_common_category = y_train.value_counts().index[0]
+
+
+baseline_predictions = np.full(len(y_test), most_common_category)
+baseline_accuracy = accuracy_score(y_test, baseline_predictions)
+print("baseline accuracy:", baseline_accuracy)
+#plt.show()
